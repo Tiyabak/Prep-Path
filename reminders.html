@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PrepPath - Reminders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0ecff);
+      color: #222;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+    }
+
+    .reminder-container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .reminder-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    input, button {
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    input[type="datetime-local"] {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .reminder-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .reminder-item {
+      background: #eef2ff;
+      padding: 1rem;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reminder-item span {
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .reminder-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PrepPath - Reminders</h1>
+
+  <div class="reminder-container">
+    <div class="reminder-form">
+      <input type="text" id="reminderText" placeholder="Reminder title" />
+      <input type="datetime-local" id="reminderTime" />
+      <button onclick="addReminder()">Add Reminder</button>
+    </div>
+
+    <div class="reminder-list" id="reminderList">
+      <!-- Reminders will appear here -->
+    </div>
+  </div>
+
+  <footer>© 2025 PrepPath | Built by Tk</footer>
+
+  <script>
+    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
+
+    function addReminder() {
+      const text = document.getElementById('reminderText').value;
+      const time = document.getElementById('reminderTime').value;
+
+      if (!text || !time) {
+        alert('Please fill in both fields.');
+        return;
+      }
+
+      reminders.push({ text, time });
+      document.getElementById('reminderText').value = '';
+      document.getElementById('reminderTime').value = '';
+      saveReminders();
+    }
+
+    function saveReminders() {
+      localStorage.setItem('reminders', JSON.stringify(reminders));
+      renderReminders();
+    }
+
+    function renderReminders() {
+      const list = document.getElementById('reminderList');
+      list.innerHTML = '';
+
+      if (reminders.length === 0) {
+        list.innerHTML = '<p>No reminders set.</p>';
+        return;
+      }
+
+      reminders.forEach((r, i) => {
+        const div = document.createElement('div');
+        div.className = 'reminder-item';
+        div.innerHTML = `
+          <span>
+            <strong>${r.text}</strong><br />
+            ${new Date(r.time).toLocaleString()}
+          </span>
+          <button onclick="deleteReminder(${i})">❌</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function deleteReminder(index) {
+      reminders.splice(index, 1);
+      saveReminders();
+    }
+
+    window.onload = renderReminders;
+  </script>
+
+</body>
+</html>

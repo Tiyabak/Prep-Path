@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrepPath - Weekly Calendar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e0f7ff, #f0f4ff);
+      color: #222;
+    }
+
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+      margin-bottom: 2rem;
+    }
+
+    .calendar-container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .day-box {
+      padding: 1rem;
+      background: #f9fbff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: 0.3s;
+    }
+
+    .day-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .day-box.today {
+      background: #dbeafe;
+      border: 2px solid #3b82f6;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .calendar-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PrepPath - Weekly Calendar</h1>
+
+  <div class="calendar-container">
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Days will be inserted by JS -->
+    </div>
+  </div>
+
+  <footer>© 2025 PrepPath | Built by Tk</footer>
+
+  <script>
+    const calendarGrid = document.getElementById('calendarGrid');
+    const today = new Date();
+    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() - today.getDay() + i);
+      const isToday = date.toDateString() === today.toDateString();
+
+      const dayBox = document.createElement('div');
+      dayBox.className = 'day-box' + (isToday ? ' today' : '');
+      dayBox.innerHTML = `
+        <div><strong>${weekdays[i]}</strong></div>
+        <div>${date.getDate()}/${date.getMonth() + 1}</div>
+      `;
+      calendarGrid.appendChild(dayBox);
+    }
+  </script>
+
+</body>
+</html>

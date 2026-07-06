@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PrepPath - Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0ecff);
+      color: #222;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+      margin-bottom: 2rem;
+    }
+
+    .notes-container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .note-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    button {
+      width: fit-content;
+      align-self: flex-start;
+      padding: 0.6rem 1.2rem;
+      background: #3b82f6;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .note-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .note-item {
+      background: #eef2ff;
+      padding: 1rem;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .note-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .note-actions button {
+      background: transparent;
+      color: #444;
+      border: none;
+      margin-left: 5px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .note-meta {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 0.3rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .note-form button {
+        align-self: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PrepPath - Smart Notes</h1>
+
+  <div class="notes-container">
+    <div class="note-form">
+      <input type="text" id="noteTitle" placeholder="Enter note title..." />
+      <textarea id="noteInput" placeholder="Write your note here..."></textarea>
+      <button onclick="addNote()">Add Note</button>
+    </div>
+
+    <div class="note-list" id="noteList">
+      <!-- Notes will appear here -->
+    </div>
+  </div>
+
+  <footer>© 2025 PrepPath | Built by Tk</footer>
+
+  <script>
+    let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+    function addNote() {
+      const title = document.getElementById('noteTitle').value.trim();
+      const text = document.getElementById('noteInput').value.trim();
+      if (!title || !text) return alert('Please enter both title and note.');
+
+      const timestamp = new Date().toLocaleString();
+      notes.push({ title, text, timestamp });
+      document.getElementById('noteTitle').value = '';
+      document.getElementById('noteInput').value = '';
+      saveNotes();
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      saveNotes();
+    }
+
+    function editNote(index) {
+      const newTitle = prompt('Edit title:', notes[index].title);
+      const newText = prompt('Edit note:', notes[index].text);
+      if (newTitle !== null && newText !== null) {
+        notes[index].title = newTitle.trim();
+        notes[index].text = newText.trim();
+        notes[index].timestamp = new Date().toLocaleString();
+        saveNotes();
+      }
+    }
+
+    function saveNotes() {
+      localStorage.setItem('notes', JSON.stringify(notes));
+      renderNotes();
+    }
+
+    function renderNotes() {
+      const list = document.getElementById('noteList');
+      list.innerHTML = '';
+
+      if (notes.length === 0) {
+        list.innerHTML = '<p>No notes available.</p>';
+        return;
+      }
+
+      notes.forEach((note, i) => {
+        const div = document.createElement('div');
+        div.className = 'note-item';
+        div.innerHTML = `
+          <div class="note-actions">
+            <button onclick="editNote(${i})">✏️</button>
+            <button onclick="deleteNote(${i})">❌</button>
+          </div>
+          <h3>${note.title}</h3>
+          <p>${note.text}</p>
+          <div class="note-meta">Last updated: ${note.timestamp}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.onload = renderNotes;
+  </script>
+
+</body>
+</html>

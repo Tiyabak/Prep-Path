@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrepPath - Task Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f0f9ff, #e0ecff);
+      padding: 2rem;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+    }
+    .controls, .task-input, .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    input, select, textarea, button {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      background: #3b82f6;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .task-list {
+      max-width: 800px;
+      margin: auto;
+    }
+    .task-card {
+      background: #fff;
+      border-left: 6px solid #3b82f6;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .task-card.overdue { border-color: red; }
+    .task-card.completed { opacity: 0.6; text-decoration: line-through; }
+    .priority-High { color: red; }
+    .priority-Medium { color: orange; }
+    .priority-Low { color: green; }
+    .subtasks { margin-top: 0.5rem; font-size: 0.9rem; }
+    .footer { text-align: center; margin-top: 2rem; font-size: 0.85rem; color: #777; }
+  </style>
+</head>
+<body>
+  <h1>PrepPath Task Manager</h1>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search tasks">
+    <select id="sortOption">
+      <option value="default">Sort By</option>
+      <option value="priority">Priority</option>
+      <option value="dueDate">Due Date</option>
+      <option value="category">Category</option>
+    </select>
+    <select id="filterCategory">
+      <option value="all">All Categories</option>
+    </select>
+    <button onclick="exportTasks()">Export JSON</button>
+  </div>
+
+  <div class="tabs">
+    <button onclick="setTab('all')">All</button>
+    <button onclick="setTab('pending')">Pending</button>
+    <button onclick="setTab('completed')">Completed</button>
+  </div>
+
+  <div class="task-input">
+    <input type="text" id="taskName" placeholder="Task name">
+    <input type="text" id="taskCategory" placeholder="Category">
+    <select id="taskPriority">
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
+    <input type="date" id="taskDue">
+    <textarea id="taskNotes" placeholder="Notes..."></textarea>
+    <button onclick="addTask()">Add Task</button>
+  </div>
+
+  <div class="task-list" id="taskList"></div>
+
+  <div class="footer">© 2025 PrepPath | Built by Tk</div>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    let currentTab = 'all';
+
+    function addQuickTask() {
+  const text = document.getElementById('quickTaskText').value.trim();
+  if (!text) return alert("Please enter a task.");
+  quickTasks.push(text);
+  document.getElementById('quickTaskText').value = '';
+  saveQuickTasks(); // This also renders the task list
+}
+    function addTask() {
+  const name = document.getElementById('taskName').value;
+  const category = document.getElementById('taskCategory').value || 'General';
+  const priority = document.getElementById('taskPriority').value;
+  const due = document.getElementById('taskDue').value;
+  const notes = document.getElementById('taskNotes').value;
+
+  if (!name) return alert('Task name required');
+
+  tasks.push({
+    name,
+    category,
+    priority,
+    due,
+    notes,
+    completed: false,
+    subtasks: []
+  });
+
+  // ✅ Clear inputs
+  document.getElementById('taskName').value = '';
+  document.getElementById('taskCategory').value = '';
+  document.getElementById('taskPriority').value = 'Low';
+  document.getElementById('taskDue').value = '';
+  document.getElementById('taskNotes').value = '';
+
+  // ✅ Save and render
+  saveTasks();
+  renderTasks();
+}
+
+function renderTasks() {
+      const list = document.getElementById('taskList');
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const filterCat = document.getElementById('filterCategory').value;
+      list.innerHTML = '';
+      const now = new Date().toISOString().split('T')[0];
+
+      tasks
+        .filter(t => (currentTab === 'completed' ? t.completed : currentTab === 'pending' ? !t.completed : true))
+        .filter(t => t.name.toLowerCase().includes(search))
+        .filter(t => filterCat === 'all' || t.category === filterCat)
+        .forEach((t, i) => {
+          const div = document.createElement('div');
+          div.className = 'task-card ' + (t.completed ? 'completed' : '') + (t.due && t.due < now && !t.completed ? ' overdue' : '');
+          div.innerHTML = `
+            <strong>${t.name}</strong> <span class="priority-${t.priority}">(${t.priority})</span><br>
+            <em>${t.category} | Due: ${t.due || 'N/A'}</em><br>
+            ${t.notes ? `<p>${t.notes}</p>` : ''}
+            <button onclick="toggle(${i})">✔</button>
+            <button onclick="edit(${i})">✏️</button>
+            <button onclick="del(${i})">❌</button>
+            <button onclick="addSubtask(${i})">+ Subtask</button>
+            ${t.subtasks.length ? `<div class='subtasks'>Subtasks (${t.subtasks.filter(s => s.completed).length}/${t.subtasks.length})</div>` : ''}
+          `;
+          list.appendChild(div);
+        });
+    }
+
+    function toggle(i) {
+      tasks[i].completed = !tasks[i].completed;
+      saveTasks();
+    }
+    function del(i) {
+      if (confirm('Delete this task?')) {
+        tasks.splice(i, 1);
+        saveTasks();
+      }
+    }
+    function edit(i) {
+      const t = tasks[i];
+      const name = prompt('Task name:', t.name);
+      if (!name) return;
+      t.name = name;
+      t.category = prompt('Category:', t.category) || t.category;
+      t.priority = prompt('Priority (Low, Medium, High):', t.priority) || t.priority;
+      t.due = prompt('Due Date:', t.due) || t.due;
+      t.notes = prompt('Notes:', t.notes) || t.notes;
+      saveTasks();
+    }
+    function addSubtask(i) {
+      const name = prompt('Subtask name:');
+      if (name) tasks[i].subtasks.push({ name, completed: false });
+      saveTasks();
+    }
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+      updateFilters();
+    }
+    function sortTasks() {
+      const type = document.getElementById('sortOption').value;
+      const order = { Low: 1, Medium: 2, High: 3 };
+      if (type === 'priority') tasks.sort((a,b) => order[a.priority] - order[b.priority]);
+      if (type === 'dueDate') tasks.sort((a,b) => (a.due || '').localeCompare(b.due || ''));
+      if (type === 'category') tasks.sort((a,b) => a.category.localeCompare(b.category));
+      saveTasks();
+    }
+    function updateFilters() {
+      const catSel = document.getElementById('filterCategory');
+      const cats = [...new Set(tasks.map(t => t.category))];
+      catSel.innerHTML = '<option value="all">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+    function exportTasks() {
+      const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tasks.json';
+      a.click();
+    }
+    function setTab(tab) {
+      currentTab = tab;
+      renderTasks();
+    }
+    window.onload = () => {
+      renderTasks();
+      updateFilters();
+    }
+  </script>
+</body>
+</html>

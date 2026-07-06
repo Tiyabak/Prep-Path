@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PrepPath - Goals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e0ecff);
+      color: #222;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+    }
+
+    .goals-container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .goal-form {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    input, button {
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .goal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .goal-item {
+      background: #eef2ff;
+      padding: 1rem;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .goal-item.completed {
+      text-decoration: line-through;
+      color: gray;
+      opacity: 0.7;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .goal-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PrepPath - Your Study Goals</h1>
+
+  <div class="goals-container">
+    <div class="goal-form">
+      <input type="text" id="goalInput" placeholder="Enter a new goal..." />
+      <button onclick="addGoal()">Add Goal</button>
+    </div>
+
+    <div class="goal-list" id="goalList">
+      <!-- Goals will appear here -->
+    </div>
+  </div>
+
+  <footer>© 2025 PrepPath | Built by Tk</footer>
+
+  <script>
+    let goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    function addGoal() {
+      const input = document.getElementById('goalInput');
+      const text = input.value.trim();
+      if (!text) return alert('Please enter a goal.');
+      goals.push({ text, completed: false });
+      input.value = '';
+      saveGoals();
+    }
+
+    function toggleGoal(index) {
+      goals[index].completed = !goals[index].completed;
+      saveGoals();
+    }
+
+    function deleteGoal(index) {
+      goals.splice(index, 1);
+      saveGoals();
+    }
+
+    function saveGoals() {
+      localStorage.setItem('goals', JSON.stringify(goals));
+      renderGoals();
+    }
+
+    function renderGoals() {
+      const list = document.getElementById('goalList');
+      list.innerHTML = '';
+      if (goals.length === 0) {
+        list.innerHTML = '<p>No goals added yet.</p>';
+        return;
+      }
+
+      goals.forEach((goal, i) => {
+        const div = document.createElement('div');
+        div.className = 'goal-item' + (goal.completed ? ' completed' : '');
+        div.innerHTML = `
+          <span onclick="toggleGoal(${i})">${goal.text}</span>
+          <button onclick="deleteGoal(${i})">❌</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.onload = renderGoals;
+  </script>
+
+</body>
+</html>

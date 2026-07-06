@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prep Path - Home</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body class="home-body">
+    <header class="main-header">
+      <h1>Welcome to Your Digital Planner</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="login-signup.html">Login/signup</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="settings.html">Settings</a>
+        <a href="about.html">About</a>
+      </nav>
+    </header>
+
+    <main class="home-main">
+      <div id="welcomePopup" class="popup hidden">
+        <div class="popup-content">
+          <h2>Welcome to Your Journey!</h2>
+          <p>Stay motivated. Achieve your dreams!</p>
+          <button onclick="closePopup()">Let's Go!</button>
+        </div>
+      </div>
+
+      <section class="quote-section">
+        <p id="quoteDisplay">Loading your motivation...</p>
+      </section>
+
+      <button class="start-btn" onclick="window.location.href='login-signup.html'">Get Started</button>
+    </main>
+
+    <footer>© 2025 Digital Planner | Built by Tk</footer>
+  </body>
+</html>

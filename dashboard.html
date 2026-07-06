@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PrepPath Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg-light: #f2f7ff;
+      --text-light: #222;
+      --card-light: #fff;
+      --primary-light: #407BFF;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5fafe, #e3efff);
+      background-size: 400% 400%;
+      animation: bgFlow 20s ease infinite;
+      color: var(--text-light);
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    @keyframes bgFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-light);
+    }
+
+    p.sub-text {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card-light);
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h2 {
+      margin: 0.5rem 0;
+      font-size: 1.4rem;
+      color: var(--primary-light);
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    .card span.icon {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .nav {
+      margin-top: 2rem;
+    }
+
+    .btn-logout {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+
+    .btn-logout:hover {
+      background: #e63946;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>PrepPath</h1>
+  <p class="sub-text">Your Smart Academic Dashboard</p>
+
+  <div class="grid">
+    <div class="card" onclick="navigate('tasks.html')">
+      <span class="icon">📝</span>
+      <h2>Tasks</h2>
+      <p>Manage daily priorities & deadlines</p>
+    </div>
+    <div class="card" onclick="navigate('calender.html')">
+      <span class="icon">📅</span>
+      <h2>Calendar</h2>
+      <p>View your academic schedule</p>
+    </div>
+    <div class="card" onclick="navigate('reminders.html')">
+      <span class="icon">⏰</span>
+      <h2>Reminders</h2>
+      <p>Set alerts for tasks & classes</p>
+    </div>
+    <div class="card" onclick="navigate('goals.html')">
+      <span class="icon">🎯</span>
+      <h2>Goals</h2>
+      <p>Track progress & achievements</p>
+    </div>
+    <div class="card" onclick="navigate('notes.html')">
+      <span class="icon">🗒️</span>
+      <h2>Notes</h2>
+      <p>Store your important study notes</p>
+    </div>
+    <div class="card" onclick="navigate('settings.html')">
+      <span class="icon">⚙️</span>
+      <h2>Settings</h2>
+      <p>Theme, help center, and more</p>
+    </div>
+    <div class="card" onclick="navigate('about.html')">
+      <span class="icon">ℹ️</span>
+      <h2>About</h2>
+      <p>Learn more about PrepPath</p>
+    </div>
+  </div>
+
+  <button class="btn-logout" onclick="logout()">Logout</button>
+
+  <footer>© 2025 PrepPath | Built by Tk</footer>
+
+  <script>
+    function navigate(page) {
+      window.location.href = page;
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      alert("You've been logged out!");
+      window.location.href = 'login.html';
+    }
+
+    // Optional: Uncomment to enable dark mode toggle
+    /*
+    document.addEventListener('DOMContentLoaded', () => {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'dark') document.body.classList.add('dark');
+    });
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+    */
+  </script>
+</body>
+</html>

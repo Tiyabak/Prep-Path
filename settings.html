@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <style>
+    /* Light Mode */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      background-size: 400% 400%;
+      animation: gradientMove 20s ease infinite;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body.dark-theme {
+      background: linear-gradient(135deg, #232526, #414345);
+      color: #fff;
+    }
+
+    .settings-box {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: background 0.5s;
+    }
+
+    /*body.dark-theme .settings-box {
+      background: rgba(0, 0, 0, 0.6);
+    }*/
+
+    .settings-box h1 {
+      margin-bottom: 1rem;
+    }
+
+    button {
+      margin: 10px 0;
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 1rem;
+      font-size: 1rem;
+      background: linear-gradient(to right, #89f7fe, #66a6ff);
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #667eea, #764ba2);
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin: 10px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #66a6ff;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="settings-box">
+    <h1>Settings</h1>
+
+    <div>
+  
+    <button onclick="showHelp()">Help Center</button>
+    <button onclick="shareProgress()">Share Progress</button>
+    <button onclick="goHome()">🏠 Home</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </div>
+
+  <footer>© 2025 Digital Planner | Built by Tk</footer>
+
+  <script>
+    /*function showHelp() {
+      alert('Help Center:\n- Add tasks on Task Page\n- Track Progress\n- Dark/Light mode switch\n- Share your success with friends!');
+    }*/
+
+    function shareProgress() {
+      const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      const completed = tasks.filter(t => t.completed).length;
+      const total = tasks.length;
+      const progress = total ? ((completed / total) * 100).toFixed(0) : 0;
+      navigator.clipboard.writeText(`I'm ${progress}% done with my tasks on Digital Planner! 🚀`);
+      alert('Progress copied to clipboard!');
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = 'login-signup.html';
+    }
+  </script>
+
+</body>
+</html>

@@ -2,6 +2,10 @@
 
 Prep Path is a modern and responsive web-based study planner designed to help students organize their learning journey. It provides an intuitive interface for managing study goals, tracking progress, and staying motivated throughout exam preparation.
 
+## 🌐 Live Demo
+
+👉 https://tiyabak.github.io/Prep-Path/
+
 ## ✨ Features
 
 - 🏠 Attractive Home Page
@@ -33,6 +37,9 @@ Prep Path is a modern and responsive web-based study planner designed to help st
 
 Developed by **Tk**
 
----
+GitHub: https://github.com/tiyabak
 
 ⭐ If you like this project, consider giving it a star!
+
+
+
